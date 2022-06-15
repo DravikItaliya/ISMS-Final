@@ -27,6 +27,7 @@ import warnings
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+
 def Login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -93,17 +94,20 @@ def index(request):
                 data = Face.objects.get(adharno=aadhar)
                 print(data)
                 f.write(data.name)
+                return HttpResponseRedirect('/')
             except:
                 f.write('NA')
+                return HttpResponseRedirect('/')
             f.close()
         except:
             raise Http404("No such entry")
+            return HttpResponseRedirect('/')
 
     return render(request, "index.html")
 
 
 def section(request, num):
-    if 1 <= num <= 5:
+    if 1 <= num <= 6:
         if num == 1:
             return HttpResponseRedirect('view')
         if num == 2:
@@ -114,8 +118,11 @@ def section(request, num):
             return HttpResponseRedirect('category')
         if num == 5:
             return HttpResponseRedirect('get_data')
+        if num == 6:
+            return HttpResponseRedirect('undefined')
     else:
         raise Http404("No such section")
+        return HttpResponseRedirect('/')
 
 
 def Start_Webcam(request):
@@ -323,7 +330,6 @@ def click(dirName):
     cv2.destroyAllWindows()
 
 
-
 def view(request):
     sup = Face.objects.filter(cat='Supervisor')
     f = open('name.txt', 'r')
@@ -440,12 +446,12 @@ def view(request):
                 else:
                     return render(request, 'view.html',
                                   {'Name': Name, 'Number': Number, 'Rank': Rank, 'Adhar': Adhar, 'snumber': snumber,
-                                   'Cat': Cat, 'B': B, 'img_name': img_name, 'gender': gender, 'sup': sup, 'data': 'known'})
+                                   'Cat': Cat, 'B': B, 'img_name': img_name, 'gender': gender, 'sup': sup,
+                                   'data': 'known'})
 
                     f2 = open('name1.txt', 'w')
                     f2.write('NA')
                     f2.close()
-
 
     return render(request, 'view.html')
 
@@ -488,6 +494,10 @@ def add(request):
         pass
     c = cat.objects.all()
     return render(request, 'add.html', {'c': c})
+
+
+def undefined(request):
+    return render(request, 'undefined.html')
 
 
 def checklog(request):

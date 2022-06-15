@@ -13,6 +13,7 @@ urlpatterns = [
     path('click',views.click, name='click'),
     path('sections/add/',views.add, name='add'),
     path('sections/category/',views.category, name='category'),
+    path('sections/undefined/',views.undefined, name='undefined'),
     path('sections/view/',views.view, name='view'),
     path('sections/checklog/',views.checklog, name='checklog'),
     path('sections/<int:num>', views.section, name='section'),
