@@ -19,6 +19,7 @@ class Face(models.Model):
 	username=models.TextField(null=True)
 	date = models.DateField(null=True)
 	time = models.TimeField(null=True)
+	picclick = models.BooleanField(default=False)
 
 	def __str__(self):
 		return self.name

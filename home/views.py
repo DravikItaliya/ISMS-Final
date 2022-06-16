@@ -484,11 +484,15 @@ def add(request):
         date = datetime.datetime.now().date()
         time = datetime.datetime.now().time()
         username = 'Dhairya'
-        Add1 = Face(name=name, rank=rank, number=number, adharno=adharno, blacklist=blacklist, cat=Cat, gender=gender,
-                    snumber=snumber, username=username, date=date, time=time)
-        Add1.save()
         dirName = name
-        click(dirName)
+        try:
+            click(dirName)
+            pic_click = True
+        except:
+            pic_click = False
+        Add1 = Face(name=name, rank=rank, number=number, adharno=adharno, blacklist=blacklist, cat=Cat, gender=gender,
+                    snumber=snumber, username=username, date=date, time=time, picclick=pic_click)
+        Add1.save()
         return HttpResponseRedirect('/')
     else:
         pass
