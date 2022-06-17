@@ -160,6 +160,11 @@ classesnav ul li {
               <center>
                 <h3>Live Feed</h3>
                 <img src="{% url 'video_feed1' %}">
+                <br>
+                <form action="/" method="post">
+                  {% csrf_token %}
+<!--                  <button type="submit" name="stop">Get Data</button>-->
+                </form>
               </center>
               <div id="results" ></div>
             </div>
@@ -168,39 +173,41 @@ classesnav ul li {
               <p class="mb-0"></p>
             </div>
           </div>
-          <section id="supervisor">
-              <center>
-                  <div class="row">
-                      <form method="post" action="">
-                          {% csrf_token %}
-                          <div class="info">
-                              <table class="table table-bordered table-dark" cellspacing="0" width="100%">
-                                      <thead>
-                                      <tr>
-                                          <th colspan = "2"><b><center>Get Data</center></b></th>
-                                      </tr>
-                                      </thead>
+<!--            {% if data == 'unknown' or data == '' %}-->
+<!--          <section id="supervisor">-->
+<!--              <center>-->
+<!--                  <div class="row">-->
+<!--                      <form method="post" action="">-->
+<!--                          {% csrf_token %}-->
+<!--                          <div class="info">-->
+<!--                              <table class="table table-bordered table-dark" cellspacing="0" width="100%">-->
+<!--                                      <thead>-->
+<!--                                      <tr>-->
+<!--                                          <th colspan = "2"><b><center>Get Data ( if face is not match )</center></b></th>-->
+<!--                                      </tr>-->
+<!--                                      </thead>-->
 
-                                      <tbody>
-                                      <tr>
-                                          <label for="aadhar"><td>Enter Adhar number</td></label>
-                                          <td><input type="text" pattern="\d*" class="fname"
-                                                     onwheel="this.blur()" id="aadhar" name="aadhar"
-                                                     maxlength="12" minlength="12" placeholder="Adhar Number"
-                                                     required></td>
-                                      </tr>
+<!--                                      <tbody>-->
+<!--                                      <tr>-->
+<!--                                          <label for="aadhar"><td>Enter Adhar number</td></label>-->
+<!--                                          <td><input type="text" pattern="\d*" class="fname"-->
+<!--                                                     onwheel="this.blur()" id="aadhar" name="aadhar"-->
+<!--                                                     maxlength="12" minlength="12" placeholder="Adhar Number"-->
+<!--                                                     required></td>-->
+<!--                                      </tr>-->
 
 
-                                      <tr></tr>
-                                      </tbody>
-                              </table>
-                              <button class="btn btn-primary" name='get_data' type="submit">Get Details</button>
+<!--                                      <tr></tr>-->
+<!--                                      </tbody>-->
+<!--                              </table>-->
+<!--                              <button class="btn btn-primary" name='get_data' type="submit">Get Details</button>-->
 
-                          </div>
-                      </form>
-                  </div>
-              </center>
-            </section>
+<!--                          </div>-->
+<!--                      </form>-->
+<!--                  </div>-->
+<!--              </center>-->
+<!--            </section>-->
+<!--            {% endif %}-->
         </div>
 
         <div class="col-lg-8 col-md-8 mb-md-0 mb-4">
@@ -211,7 +218,7 @@ classesnav ul li {
                   <button id="view" data-section="1" href="view/" class="btn btnview active">View Details</button>
                   <button id="add" data-section="2" href="add/" class="btn">Add Personnel</button>
                   <button id="checklog" data-section="3" href="checklog/" class="btn">Check Logs</button>
-                  <button id="cat" data-section="4" href="cat/" class="btn">Update Category</button>
+<!--                  <button id="cat" data-section="4" href="cat/" class="btn">Update Category</button>-->
                   <div id="content">
 
                   </div>

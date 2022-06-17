@@ -86,24 +86,33 @@ def logout(request):
 
 
 def index(request):
+
     if request.method == 'POST':
+        if 'stop' in request.POST:
+            pass
         try:
             aadhar = request.POST.get('aadhar')
-            f = open('name1.txt', 'w')
+            f = open('name.txt', 'w')
             try:
                 data = Face.objects.get(adharno=aadhar)
                 print(data)
+                f.truncate()
                 f.write(data.name)
+                print("Idhar")
                 return HttpResponseRedirect('/')
             except:
-                f.write('NA')
+                f.truncate()
+                f.write('unknown1')
                 return HttpResponseRedirect('/')
             f.close()
         except:
             raise Http404("No such entry")
             return HttpResponseRedirect('/')
 
-    return render(request, "index.html")
+    with open('name.txt', 'r') as f:
+        f = str(f.readline())
+
+    return render(request, "index.html", {'data': f})
 
 
 def section(request, num):
@@ -254,9 +263,6 @@ class VideoCamera1(object):
                     font = cv2.FONT_HERSHEY_DUPLEX
                     cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (0, 0, 0), 1)
                     identify1(frame, name, buf, buf_length, known_conf)
-                    file = open("name.txt", 'w')
-                    file.write(str(name))
-                    file.close()
 
                 face_names.append(name)
 
@@ -303,52 +309,69 @@ def click(dirName):
         print("Directory ", dirName, " already exists")
         img_counter = len(os.listdir(DIR))
 
-    cam = cv2.VideoCapture(0)
+    try:
+        cam = cv2.VideoCapture(0)
 
-    while True:
-        ret, frame = cam.read()
+        while True:
+            ret, frame = cam.read()
+            cv2.imshow("Video", frame)
 
-        cv2.imshow("Video", frame)
-        if not ret:
-            break
-        k = cv2.waitKey(1)
+            if not ret:
+                break
+            k = cv2.waitKey(1)
 
-        if k % 256 == 27:
-            # ESC pressed
-            print("Escape hit, closing...")
-            break
+            if k % 256 == 27:
+                # ESC pressed
+                print("Escape hit, closing...")
+                break
 
-        elif k % 256 == 32:
-            # SPACE pressed
-            img_name = f"static/dataset/{dirName}/opencv_frame_{img_counter}.png"
-            cv2.imwrite(img_name, frame)
-            print("{} written!".format(img_name))
-            img_counter += 1
+            elif k % 256 == 32:
+                # SPACE pressed
+                img_name = f"static/dataset/{dirName}/opencv_frame_{img_counter}.png"
+                cv2.imwrite(img_name, frame)
+                print("{} written!".format(img_name))
+                img_counter += 1
 
-    cam.release()
+        cam.release()
 
-    cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
+
+    except:
+        d = Entry.objects.last()
+        d.faceMatched = False
+
 
 
 def view(request):
     sup = Face.objects.filter(cat='Supervisor')
     f = open('name.txt', 'r')
     name = str(f.readline())
-    name1 = 'NA'
-    try:
-        f1 = open('name1.txt', 'r')
-        name1 = str(f1.readline())
-        f1.close()
-        # print("name1" + str(name1))
-    except:
-        pass
-
+    print(name)
     task = Face.objects.all()
 
+    if name == "":
+        return render(request, 'view.html',
+                      {'Name': 'unknown', 'Number': 'unknown', 'Rank': 'unknown', 'Adhar': 'unknown',
+                       'snumber': 'unknown',
+                       'Cat': 'unknown', 'B': 'unknown', 'img_name': 'unknown', 'gender': 'unknown', 'sup': 'unknown',
+                       'data': 'Not Found ( Please go Add person tab to enter data)'})
+
     if name == 'unknown':
-        if name1 == 'NA':
-            u = name
-            return render(request, 'view.html', {'data': u})
+        return render(request, 'view.html',
+                      {'Name': 'unknown', 'Number': 'unknown', 'Rank': 'unknown', 'Adhar': 'unknown',
+                       'snumber': 'unknown', 'Cat': 'unknown', 'B': 'unknown', 'img_name': 'unknown',
+                       'gender': 'unknown', 'sup': 'unknown', 'data': 'Not Found ( Please go Add person tab to enter data)'})
+
+    if name == 'unknown1':
+        c = cat.objects.all()
+        return render(request, 'view.html',
+                      {'Name': 'unknown', 'Number': 'unknown', 'Rank': 'unknown', 'Adhar': 'unknown',
+                       'snumber': 'unknown', 'Cat': 'unknown', 'B': 'unknown', 'img_name': 'unknown',
+                       'gender': 'unknown', 'sup': 'unknown', 'data': 'unknown1', 'c': c})
+
+        with open('name.txt', 'w') as f:
+            f.truncate()
+            f.write('unknown')
 
     for i in task:
         if i.name == name:
@@ -363,6 +386,7 @@ def view(request):
             B = i.blacklist
             snumber = i.snumber
 
+
             if 'In' in request.POST:
                 supervisor = request.POST.get('supervisor')
                 token = request.POST.get('token')
@@ -375,6 +399,9 @@ def view(request):
                 a = Save(name=Name, rank=Rank, number=Number, adharno=Adhar, snumber=snumber, cat=Cat,
                          supervisor=supervisor, token=token, blacklist=B, timein=timein, datein=datein)
                 d = Entry(name=Name, purpose=purpose, supervisor=supervisor, inDb=True, faceMatched=True)
+                with open('name.txt', 'w') as f:
+                    f.truncate()
+                    f.write('unknown')
                 d.save()
                 a.save()
                 return HttpResponseRedirect('/')
@@ -388,70 +415,15 @@ def view(request):
                 timeout = a.timeout
                 dateout = a.dateout
                 a.save()
+                with open('name.txt', 'w') as f:
+                    f.truncate()
+                    f.write('unknown')
                 return HttpResponseRedirect('/')
 
             else:
                 return render(request, 'view.html',
                               {'Name': Name, 'Number': Number, 'Rank': Rank, 'Adhar': Adhar, 'snumber': snumber,
-                               'Cat': Cat, 'B': B, 'img_name': img_name, 'gender': gender, 'sup': sup, 'data': 'known'})
-
-    if name1 != 'NA':
-        for i in task:
-            # print(i.name)
-            if i.name == name1:
-                # i.name=(i.name).replace(' ','_')
-                img_name = f"static/dataset/{i.name}/opencv_frame_0.png"
-                Name = i.name
-                Rank = i.rank
-                Number = i.number
-                Adhar = i.adharno
-                Cat = i.cat
-                gender = i.gender
-                B = i.blacklist
-                snumber = i.snumber
-
-                if 'In' in request.POST:
-                    print('here1')
-                    supervisor = request.POST.get('supervisor')
-                    token = request.POST.get('token')
-                    purpose = request.POST.get('purpose')
-                    date = datetime.datetime.now().date()
-                    time = datetime.datetime.now().time()
-
-                    datein = datetime.datetime.now().date()
-                    timein = datetime.datetime.now().time()
-                    a = Save(name=Name, rank=Rank, number=Number, adharno=Adhar, snumber=snumber, cat=Cat,
-                             supervisor=supervisor, token=token, blacklist=B, timein=timein, datein=datein)
-                    d = Entry(name=Name, purpose=purpose, supervisor=supervisor, inDb=True, faceMatched=False)
-                    d.save()
-                    a.save()
-                    f2 = open('name1.txt', 'w')
-                    f2.write('NA')
-                    f2.close()
-                    return HttpResponseRedirect('/')
-
-                if 'Out' in request.POST:
-                    a = Save.objects.filter(name=Name).last()
-                    a.timeout = datetime.datetime.now().time()
-                    a.dateout = datetime.datetime.now().date()
-                    timein = a.timein
-                    datein = a.datein
-                    timeout = a.timeout
-                    dateout = a.dateout
-                    a.save()
-                    f2 = open('name1.txt', 'w')
-                    f2.write('NA')
-                    f2.close()
-                    return HttpResponseRedirect('/')
-                else:
-                    return render(request, 'view.html',
-                                  {'Name': Name, 'Number': Number, 'Rank': Rank, 'Adhar': Adhar, 'snumber': snumber,
-                                   'Cat': Cat, 'B': B, 'img_name': img_name, 'gender': gender, 'sup': sup,
-                                   'data': 'known'})
-
-                    f2 = open('name1.txt', 'w')
-                    f2.write('NA')
-                    f2.close()
+                               'Cat': Cat, 'B': B, 'img_name': img_name, 'gender': gender, 'sup': sup, 'data': 'Found'})
 
     return render(request, 'view.html')
 
@@ -485,14 +457,10 @@ def add(request):
         time = datetime.datetime.now().time()
         username = 'Dhairya'
         dirName = name
-        try:
-            click(dirName)
-            pic_click = True
-        except:
-            pic_click = False
         Add1 = Face(name=name, rank=rank, number=number, adharno=adharno, blacklist=blacklist, cat=Cat, gender=gender,
-                    snumber=snumber, username=username, date=date, time=time, picclick=pic_click)
+                    snumber=snumber, username=username, date=date, time=time, picclick=True)
         Add1.save()
+        click(dirName)
         return HttpResponseRedirect('/')
     else:
         pass

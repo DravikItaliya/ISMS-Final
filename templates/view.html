@@ -204,7 +204,144 @@ classesnav ul li {
   <section id="view">
     <center>
       <h3><b>Face Recognition System</b></h3>
+      <br>
+      {% if data != 'Found' %}
+          {% if data != 'unknown1' %}
+                <div class="alert alert-danger" role="alert">
+            Face is not recognized. Please use aadhar card details to fetch data of the person.
+          </div>
+              <div>
+                  <section id="supervisor">
+                      <center>
+                          <div class="row">
+                              <form method="post" action="/">
+                                  {% csrf_token %}
+                                  <div class="info">
+                                      <table class="table table-bordered table-dark" cellspacing="0" width="100%">
+                                              <thead>
+                                              <tr>
+                                                  <th colspan = "2"><b><center>Get Data ( if face is not match )</center></b></th>
+                                              </tr>
+                                              </thead>
 
+                                              <tbody>
+                                              <tr>
+                                                  <label for="aadhar"><td>Enter Adhar number</td></label>
+                                                  <td><input type="text" pattern="\d*" class="fname"
+                                                             onwheel="this.blur()" id="aadhar" name="aadhar"
+                                                             maxlength="12" minlength="12" placeholder="Adhar Number"
+                                                             required></td>
+                                              </tr>
+
+
+                                              <tr></tr>
+                                              </tbody>
+                                      </table>
+                                      <button class="btn btn-primary" name='get_data' type="submit">Get Details</button>
+                                  </div>
+                              </form>
+                          </div>
+                      </center>
+                    </section>
+              </div>
+          {% else %}
+            <section id="add">
+                <center>
+                    <div class="row">
+                        <div class="alert alert-danger" role="alert">
+                            Aadhar Card record is not found. Please add person details.
+                        </div>
+                        <form method="post" action="sections/add/">
+                            {% csrf_token %}
+                            <div class="info">
+                                <table class="table table-bordered table-dark" cellspacing="0" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th colspan = "2"><b><center>Parameters</center></b></th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                    <tr>
+                                        <label for="name"><td>Name</td></label>
+                                        <td><center><input type="text" class="fname" id="name" name="name" placeholder="Name" required></center></td>
+                                    </tr>
+                                    <tr>
+                                        <label for="rank"><td>Rank</td></label>
+                                        <td><center><input type="text" class="fname" id="rank" name="rank" placeholder="Rank"></center></td>
+                                    </tr>
+
+                                    <tr>
+                                        <label for="number"><td>Phone Number</td></label>
+                                        <td><center>
+                                            <input type="text" pattern="\d*" class="fname"
+                                                       onwheel="this.blur()"
+                                                       maxlength="10" minlength="10" id="number"
+                                                        name="number" placeholder="Phone Number" required>
+                                        </center></td>
+                                    </tr>
+
+                                    <tr>
+                                        <label for="adharno"><td>Aadhaar No</td></label>
+                                        <td><center>
+                                            <input type="text" type="text" pattern="\d*" class="fname"
+                                                       onwheel="this.blur()"
+                                                       maxlength="12" minlength="12"
+                                                        id="adharno" name="adharno" placeholder="Aadhaar No" required>
+                                        </center></td>
+                                    </tr>
+
+                                    <tr>
+                                        <label for="snumber"><td>Service No</td></label>
+                                        <td><center><input type="text" class="fname" id="snumber" name="snumber" placeholder="Service No"></center></td>
+                                    </tr>
+
+                                    <tr>
+                                      <label for="cat"><td>Category</td></label>
+                                      <td>
+                                        <select id="cat" name="cat" class="fname" aria-label="Default select example" required>
+                                          <option value="N/A">Select Category</option>
+                                          {% for i in c %}
+                                          <option value={{i.category}}> {{i.category}} </option>
+                                          {% endfor %}
+                                        </select>
+                                      </td>
+                                    </tr>
+
+                                    <tr>
+                                        <label for="gender"><td>Gender</td></label>
+                                        <td>
+                                            <select id="gender" name="gender" class="fname" aria-label="Default select Gender" required>
+                                                <option value="N/A">Select Gender</option>
+                                                <option value="Male"> Male </option>
+                                                <option value="Female"> Female </option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <label for="blacklist"><td>Blacklist</td></label>
+                                        <td>
+                                            <select id="blacklist" name="blacklist" class="fname" aria-label="Default select Gender" required>
+                                                <option value="No"> No </option>
+                                                <option value="Yes"> Yes </option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr></tr>
+                                    </tbody>
+                                </table>
+                                <button class="btn btn-primary" type="submit">Submit</button>
+
+                            </div>
+                        </form>
+                    </div>
+                </center>
+              </section>
+          {% endif %}
+      {% else %}
       <table class="table table-bordered table-dark" cellspacing="0" width="100%">
         <thead>
         <tr>
@@ -213,9 +350,7 @@ classesnav ul li {
         </tr>
         </thead>
 
-
-        <p id="Name" class="d-none">{{Name}}</p>
-
+        <p id="name" class="d-none">{{Name}}</p>
         <tbody>
         <!--                        Run a for loop to fetch a task from the database-->
         <tr>
@@ -316,7 +451,7 @@ classesnav ul li {
         </p>
       </form>
         </div>
-
+      {% endif %}
 <!--      <p><a href="/correct" class="btn btn-success btn-lg col-xs-2 margin-left">Correct</a>-->
 <!--        <a href="/unknown" class="btn btn-danger btn-lg col-xs-2 margin-left">Unknown</a>-->
 <!--        <a href="/incorrect" class="btn btn-warning btn-lg col-xs-2 margin-left">Incorrect</a></p>-->

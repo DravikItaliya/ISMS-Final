@@ -6,7 +6,7 @@ import time
 
 def start():
     pass
-    # schedule.every().day.at("11:18").do(trainer)
+    # scshedule.every().day.at("11:18").do(trainer)
     # print("Scheduled Re-Training is starting now...")
     # while True:
     #     schedule.run_pending()
